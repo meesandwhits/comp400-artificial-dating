@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Security Check{% endblock %}
+
+{% block head %}
+    <!-- Turnstile only loads on the page that needs it -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Verifying you are human...</h2>
+    <p>Please wait a moment while we verify your session.</p>
+
+    {% if error %}
+        <div class="error-box">{{ error }}</div>
+    {% endif %}
+
+    <form id="captcha-form" action="/verify" method="POST">
+        <div style="display: flex; justify-content: center; margin-top: 20px;">
+            <div class="cf-turnstile" 
+                 data-sitekey="1x00000000000000000000AA" 
+                 data-callback="onCaptchaSuccess">
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    function onCaptchaSuccess(token) {
+        document.getElementById('captcha-form').submit();
+    }
+</script>
+{% endblock %}

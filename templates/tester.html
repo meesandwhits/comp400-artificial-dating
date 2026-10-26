@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Tester Form{% endblock %}
+
+{% block content %}
+<div class="card" style="text-align: left;">
+    <h2 style="text-align: center;">Demographics Tester</h2>
+    
+    <form action="/submit-tester" method="POST">
+        
+        <!-- 1. Gender -->
+        <p><strong>What is your gender?</strong></br>
+        <label><input type="radio" name="gender" value="Female" required> Female</label><br>
+        <label><input type="radio" name="gender" value="Male"> Male</label><br>
+
+        <!-- 2. Age -->
+        <p><strong>What is your age?</strong></br>
+        <label><input type="radio" name="age" value="18-25" required> 18-25</label><br>
+        <label><input type="radio" name="age" value="26-40" required> 26-40</label><br>
+        <label><input type="radio" name="age" value="Cont.." required> Cont..</label><br>
+
+        <!-- 3. Dating Preference -->
+        <p><strong>What is your dating preference?</strong></br>
+        <label><input type="radio" name="preference" value="Female" required> Female</label><br>
+        <label><input type="radio" name="preference" value="Male"> Male</label><br>
+
+        <div style="text-align: center;">
+            <button type="submit" class="btn">Submit</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

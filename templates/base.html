@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}My Project{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Corben:wght@400;700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <!-- Shared Stylesheet linked via Flask's url_for -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+
+    <div class="topnav">
+        <a class="active" href="/start">Home</a>
+        <a href="/contact">Contact</a>
+        <a href="/about">About Me</a>
+        <a href="/citations">Citations</a>
+        <a href="/tester">Participate</a>
+    </div>
+
+    <!-- The unique body content of each individual page renders inside this block -->
+    {% block content %}{% endblock %}
+
+</body>
+</html>

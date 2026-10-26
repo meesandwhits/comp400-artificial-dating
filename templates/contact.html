@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Page{% endblock %}
+
+{% block content %}
+
+<style>
+    a[href^="mailto"]::before {
+            content: "📧 ";
+            pointer-events: none; 
+            display: inline-block;
+            margin-right: 0.5ch;
+        }
+</style>
+
+<article>
+  <header>
+    <h2>Contact</h2>
+  </header>
+  <p>
+    <address><a href="mailto:mia.scotter@mail.mcgill.ca">mia.scotter@mail.mcgill.ca</a></address>
+
+  </p>
+
+{% endblock %}
