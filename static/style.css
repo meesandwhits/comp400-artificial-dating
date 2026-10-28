@@ -1,12 +1,44 @@
+/* this imports the tinder font */
+@import url('https://cdn.jsdelivr.net/npm/gotham-fonts@1.0.3/css/gotham-rounded.min.css');
+
 body {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #FFE6F5;
+  /* Base background color */
+    background-color: #f6eaef;
+
+  /* Two identical dot layers, with the second layer shifted */
+    background-image:  
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-12 -12 48 48" width="36" height="36"><path fill="%23fce1ec" fill-opacity="0.74" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="-12 -12 48 48" width="36" height="36"><path fill="%23fce1ec" fill-opacity="0.74" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+    
+    background-size: 40px 40px;
+
+    background-position: 
+        0 0, 
+        20px 20px;
+
+    font-family: 'Lora', serif;
+}
+
+h1 {
+    color: #93095C;
+    }
+
+.card-container {
+    margin: 60px auto;
+    display: flex;             /* Puts child elements side-by-side */
+    align-items: center;       /* Centers them vertically (use flex-start to align top) */
+    gap: 1px;                 /* Adds clean spacing between picture and text */
+    max-width: 1000px;          /* Flexible container width */
+    background: #F9EBF0;
+    border: 1px solid #dfc8ca;
+    border-radius: 9px;
+    padding: 16px;
+    box-shadow: 4px 6px 4px #dfc9ccc6;
+    flex-direction: column;
 }
 
 .card {
-    margin: 40px auto;
+    margin: 50px 80px;
     background: #F9EBF0;
     border: 1px solid #dfc8ca;
     border-radius: 9px;
@@ -14,6 +46,20 @@ body {
     box-shadow: 4px 6px 4px #dfc9ccc6;
 }
 
+.card-row {
+  display: flex;
+  flex-direction: row;       /* Forces side-by-side */
+  align-items: center;       /* Centers photo and paragraph vertically */
+  gap: 30px;                 /* Space between photo and paragraph */
+  margin: 30px 30px;
+}
+
+a[href^="mailto"]::before {
+            content: "📧 ";
+            pointer-events: none; 
+            display: inline-block;
+            margin-right: 0.5ch;
+        }
 /* -------------- BUTTON ----------------- */
 .btn {
 margin: 20px auto;
@@ -85,4 +131,49 @@ ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
+}
+
+
+
+/* -------------- MULTI-STEP FORM ----------------- */
+/* Only one step is visible at a time; steps.js moves the "active" class */
+.step { display: none; }
+.step.active { display: block; }
+ 
+/* Next row */
+.step-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 24px;
+}
+ 
+/* Smaller than the big .btn */
+.step-nav .btn {
+    margin: 0;
+    padding: 12px 40px;
+    font-size: 22px;
+}
+ 
+.choice { display: block; margin: 8px 0; }
+.step input[type="text"] { width: 100%; box-sizing: border-box; padding: 8px; font-size: 1rem; }
+ 
+/* Progress label + bar, in the site's pink */
+#progress-label { text-align: center; margin: 0 0 5px; opacity: 0.7; }
+#progress-bar {pointer-events: none; width: 80%; height: 15px; display: block; margin: 0 auto; accent-color: #D10081; }
+
+input[type="radio"] { accent-color: #D10081; }
+
+
+.tinder_profile_card {
+    margin: 50px auto;
+    width: 435px;
+    height: 930px;
+    background: white;
+    border: 4px solid black;
+    border-radius: 50px;
+    padding: 16px;
+    box-shadow: 4px 6px 4px #dfc9ccc6;
+    font-family: 'Gotham Rounded', sans-serif;
+
 }

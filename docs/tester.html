@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Tester Form{% endblock %}
+
+{% block content %}
+<div class="card" style="text-align: left;">
+    <h2 style="text-align: center;">Research Questions</h2>
+
+    <p id="progress-label"></p>
+    <progress id="progress-bar" value="1" max="4"></progress>
+    
+       <form id="testerForm" action="/submit-tester" method="POST">
+
+        <!-- Step 1: Gender -->
+        <section class="step">
+
+            <div class="tinder_profile_card" style="text-align: left;">
+                Tinder profile words!
+            </div>
+            <p><strong>What is your gender?</strong></p>
+            <label class="choice"><input type="radio" name="gender" value="Female" required> Female</label>
+            <label class="choice"><input type="radio" name="gender" value="Male"> Male</label>
+        </section>
+        
+        <!-- Step 2: Age -->
+        <section class="step">
+            <p><strong>What is your age?</strong></p>
+            <label class="choice"><input type="radio" name="age" value="18-24" required> 18-24</label>
+            <label class="choice"><input type="radio" name="age" value="25-34"> 25-34</label>
+            <label class="choice"><input type="radio" name="age" value="35-44"> 35-44</label>
+            <label class="choice"><input type="radio" name="age" value="45-54"> 45-54</label>
+            <label class="choice"><input type="radio" name="age" value="55-64"> 55-64</label>
+            <label class="choice"><input type="radio" name="age" value="65+"> 65+</label>
+        </section>
+ 
+        <!-- Step 3: Dating preference -->
+        <section class="step">
+            <p><strong>What is your dating preference?</strong></p>
+            <label class="choice"><input type="radio" name="preference" value="Women" required> Women</label>
+            <label class="choice"><input type="radio" name="preference" value="Men"> Men</label>
+        </section>
+ 
+        <!-- Step 4: Pickup line -->
+        <section class="step">
+            <div class="tinder_profile_card" style="text-align: left;">
+                hi
+            </div>
+
+
+            <p><strong>Write a pickup line</strong></p>
+            <input type="text" name="pickup_line" required>
+        </section>
+
+         <!-- To add another page, copy a <section class="step"> block above. Nothing else needs to change. -->
+ 
+        <div class="step-nav">
+            <button type="button" id="nextBtn" class="btn">Next</button>
+            <noscript><button type="submit" class="btn">Submit</button></noscript>
+        </div>
+    </form>
+</div>
+
+<script src="{{ url_for('static', filename='steps.js') }}"></script>
+
+{% endblock %}

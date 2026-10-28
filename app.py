@@ -15,8 +15,9 @@ CLOUDFLARE_SECRET_KEY = "1x0000000000000000000000000000000AA"
 GOOGLE_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdBgZeWC6Ui5XdeiwlmGhJSatcR9OOIfGm3D_enfvrKVnKslg/formResponse"
 
 ENTRY_GENDER = "entry.509253820"
-ENTRY_AGE = "entry.941370326"
-ENTRY_PREFERENCE = "entry.1170232170"
+ENTRY_AGE = "entry.2067879190"
+ENTRY_PREFERENCE = "entry.1059150171"
+ENTRY_PICKUP_LINE = "entry.1170232170"
 
 # The route defines what URL triggers this code. 
 # "/" represents the root or home address of your site.
@@ -63,12 +64,14 @@ def submit_tester():
     user_gender = request.form.get("gender")
     user_age = request.form.get("age")
     user_pref = request.form.get("preference")
+    user_line = request.form.get("pickup_line", "").strip()
 
     # Map them to your Google Form entry IDs
     payload = {
         ENTRY_GENDER: user_gender,
         ENTRY_AGE: user_age,
-        ENTRY_PREFERENCE: user_pref
+        ENTRY_PREFERENCE: user_pref,
+        ENTRY_PICKUP_LINE: user_line
     }
 
     # Send the data directly to Google Forms behind the scenes
@@ -78,7 +81,7 @@ def submit_tester():
         print(f"Error submitting to Google: {e}")
 
     # Show a simple confirmation text
-    return "<h2 style='font-family: sans-serif; text-align: center; margin-top: 50px;'>Success! Check your Google Sheet.</h2>"
+    return "<h2 style='font-family: sans-serif; text-align: center; margin-top: 50px;'>Success!.</h2>"
 
 @app.route("/start")
 def start_page():
@@ -101,6 +104,7 @@ def about_page():
 @app.route("/citations")
 def citations_page():
     return render_template("citations.html")
+
 
 
 # Run the local development server when this file is executed directly
