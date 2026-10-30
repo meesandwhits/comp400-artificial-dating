@@ -19,6 +19,8 @@ function setUpSteps() {
         // Put the cursor in a text box if this step has one
         const textBox = steps[current].querySelector("input[type='text']");
         if (textBox) textBox.focus();
+
+        document.dispatchEvent(new CustomEvent("stepchange", { detail: current }));
     }
  
     // Uses the browser's built-in validation (the `required` attributes in the HTML),

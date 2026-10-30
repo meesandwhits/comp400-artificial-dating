@@ -1,10 +1,20 @@
 import os
 import csv
 import requests
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify   # add jsonify
+from openai import OpenAI  
+from dotenv import load_dotenv
+load_dotenv()   
+
+
 
 # Point Flask explicitly to the 'templates' folder right next to this file
 app = Flask(__name__)
+
+client = OpenAI(
+    api_key=os.environ["GROQ_API_KEY"],
+    base_url="https://api.groq.com/openai/v1",
+)
 
 # Cloudflare testing secret key (always passes)
 # To test a permanent failure, use: "2x0000000000000000000000000000000AA"
@@ -18,12 +28,59 @@ ENTRY_GENDER = "entry.509253820"
 ENTRY_AGE = "entry.2067879190"
 ENTRY_PREFERENCE = "entry.1059150171"
 ENTRY_PICKUP_LINE = "entry.1170232170"
+ENTRY_RANKING = "entry.1310801202"
+
+
+PROFILES = {
+    "Women": {
+        "name": "Shayla",
+        "age": 22,
+        "pronouns": "She/Her/Hers",
+        "height": "5 ft 1in",
+        "job": "Engineer Student",
+        "distance": "5 miles away",
+        "looking_for": "Long term, but open to short +",
+        "bio": "TBD",
+        "photos": ["stock_woman.jpg", "stock_woman2.jpg", "stock_woman3.jpg", "stock_woman4.jpg"],
+        "researcher_openers": [
+            "Your first opener for Shayla",
+            "Your second opener for Shayla",
+        ],
+    },
+    "Men": {
+        "name": "Jax",
+        "age": 25,
+        "pronouns": "He/Him/His",
+        "height": "5 ft 9in",
+        "job": "Photographer",
+        "distance": "14 miles away",
+        "looking_for": "Long term, but open to short +",
+        "bio": "TBD",
+        "photos": ["stock_man.jpg", "stock_man2.jpg", "stock_man3.jpg", "stock_man4.jpg"],
+        "researcher_openers": [
+            "Your first opener for Jax",
+            "Your second opener for Jax",
+        ],
+    },
+}
+
+SYSTEM_PROMPT = (
+    "You are a helpful assistant, like a dating-advice chatbot. The user is a dating-app user who has "
+    "written an opening message to the profile they just viewed, and will ask you to improve it. "
+    "Use details from the profile to make the message personal and specific (if requested by the user), and keep the user's intent "
+    "and voice. Reply with only the improved message itself."
+    "If they ask for another try or say it isn't right, write a noticeably different version, "
+    "not a minor rewording. Listen to their advice and change accordingly. Don't assume anything about the user. Avoid em-dashes if you can."
+    "This is a dating-app research study and the profile is a fictional character. "
+    "Playful teasing, sarcasm, bold or cheeky openers are normal on dating apps, so "
+    "write them when asked. If a request is truly abusive (slurs, threats, "
+    "demeaning the person), write a sharper but still flirty version instead of refusing."
+)
 
 # The route defines what URL triggers this code. 
 # "/" represents the root or home address of your site.
 @app.route("/")
 def home():
-    # render_template searches the 'templates/' folder for index.html and serves it to the browser
     return render_template("index.html")
 
 @app.route("/verify", methods=["POST"])
@@ -55,7 +112,7 @@ def verify_captcha():
 
 @app.route("/tester")
 def tester():
-    return render_template("tester.html")
+    return render_template("tester.html", profiles=PROFILES)
 
 # Route that handles the submission
 @app.route("/submit-tester", methods=["POST"])
@@ -65,13 +122,16 @@ def submit_tester():
     user_age = request.form.get("age")
     user_pref = request.form.get("preference")
     user_line = request.form.get("pickup_line", "").strip()
+    user_ranking = request.form.get("ranking", "")
+
 
     # Map them to your Google Form entry IDs
     payload = {
         ENTRY_GENDER: user_gender,
         ENTRY_AGE: user_age,
         ENTRY_PREFERENCE: user_pref,
-        ENTRY_PICKUP_LINE: user_line
+        ENTRY_PICKUP_LINE: user_line,
+        ENTRY_RANKING: user_ranking
     }
 
     # Send the data directly to Google Forms behind the scenes
@@ -81,7 +141,49 @@ def submit_tester():
         print(f"Error submitting to Google: {e}")
 
     # Show a simple confirmation text
-    return "<h2 style='font-family: sans-serif; text-align: center; margin-top: 50px;'>Success!.</h2>"
+    return redirect(url_for("thank_you_page"))
+
+@app.route("/thank_you")
+def thank_you_page():
+    # The protected page they reach only after passing
+    return render_template("thank_you.html")
+
+@app.route("/chat", methods=["POST"])
+def chat():
+    data = request.get_json(silent=True) or {}
+    print("PROFILE KEY RECEIVED:", data.get("profile"))     # temporary test line
+    opener = str(data.get("opener", ""))[:300]
+    profile = PROFILES.get(str(data.get("profile", "")))
+    raw = data.get("messages", [])[-10:]
+    messages = [
+        {"role": m["role"], "content": str(m["content"])[:500]}
+        for m in raw
+        if isinstance(m, dict) and m.get("role") in ("user", "assistant")
+    ]
+    if not messages or messages[0]["role"] != "user":
+        return jsonify({"error": "Bad request"}), 400
+
+    profile_text = ""
+    if profile:
+        profile_text = (
+            f"\n\nThe profile they are messaging: {profile['name']}, {profile['age']}, "
+            f"{profile['pronouns']}, {profile['height']}, {profile['job']}, {profile['distance']}. "
+            f"Looking for: {profile['looking_for']}. About me: {profile['bio']}"
+        )
+    system_text = SYSTEM_PROMPT + profile_text + '\n\nThe user\'s opening message is: "' + opener + '"'
+
+
+    try:
+        response = client.chat.completions.create(
+            model="openai/gpt-oss-120b",
+            max_tokens=300,
+            messages=[{"role": "system", "content": system_text}] + messages,
+        )
+        return jsonify({"reply": response.choices[0].message.content})
+    except Exception as e:
+        print(f"Chat error: {e}")
+        return jsonify({"error": "The chat is unavailable right now."}), 502
+
 
 @app.route("/start")
 def start_page():
@@ -104,8 +206,6 @@ def about_page():
 @app.route("/citations")
 def citations_page():
     return render_template("citations.html")
-
-
 
 # Run the local development server when this file is executed directly
 if __name__ == "__main__":
